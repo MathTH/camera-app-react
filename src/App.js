@@ -9,7 +9,7 @@ function App() {
 
 
   const getVideo = () => {
-    navigator.mediaDevices.getUserMedia({ video: { width: 1920, height: 1080 } })
+    navigator.mediaDevices.getUserMedia({ video: { width: 1700, height: 1080} })
       .then(stream => {
         let video = videoRef.current;
         video.srcObject = stream;
@@ -22,7 +22,7 @@ function App() {
   };
 
   const takePhoto = () => {
-    const width = 414;
+    const width = 1920;
     const height = width / (16 / 9);
 
     let video = videoRef.current;
@@ -37,33 +37,44 @@ function App() {
 
   }
 
+  const BaixarPhoto = () => {
+  const photo = photoRef.current;
+  const link = document.createElement('a');
+  
 
-  const savePhoto = () => {
-    let photo = photoRef.current;
-    let data = photo.toDataURL('image/png');
-    console.log(data);
 
-    
-    fetch('http://localhost:3000/photos', {
-      method: 'POST',
-      body: data
-    })
 
-    fetch('http://localhost:3000/photos')
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-      }
-      )
+
+  link.href = photo.toDataURL('/image/png');
+
+  link.download = 'Documentos-Scanner.png';
+  link.click();
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+  };
+
+
+  
+
+  const closePhoto = () => {
+  let photo = photoRef.current;
+  let ctx = photo.getContext('2d');
+
+  ctx.clearRect(0, 0, photo.width, photo.height);
+   setHasPhoto(true);
   }
-
-  //const closePhoto = () => {
-  // let photo = photoRef.current;
-  // let ctx = photo.getContext('2d');
-
-  //ctx.clearRect(0, 0, photo.width, photo.height);
-  // setHasPhoto(true);
-  // }
 
   useEffect(() => {
     getVideo();
@@ -76,10 +87,11 @@ function App() {
         <video ref={videoRef}></video>
         <button onClick={takePhoto}>CAPTURE PHOTO</button>
       </div>
-      <div className={'result ' + (hasPhoto ? 'hasPhoto' : '')}>
+      <div className={'result' + (hasPhoto ? 'hasPhoto' : '')}>
         <canvas ref={photoRef}></canvas>
-        <button onClick={savePhoto}>SAVE PHOTO</button>
+        <button onClick={BaixarPhoto}>BAIXAR FOTO</button>
       </div>
+      
     </div>
   );
 }
